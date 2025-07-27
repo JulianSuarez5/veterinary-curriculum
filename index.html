@@ -781,12 +781,12 @@
                     progreso[index] = materia.classList.contains('vista');
                 });
                 const progresoData = JSON.stringify(progreso);
-                sessionStorage.setItem('progresoMallaVeterinaria', progresoData);
+                localStorage.setItem('progresoMallaVeterinaria', progresoData);
                 actualizarEstadisticas();
             }
 
             function cargarProgreso() {
-                const progresoGuardado = JSON.parse(sessionStorage.getItem('progresoMallaVeterinaria')) || {};
+                const progresoGuardado = JSON.parse(localStorage.getItem('progresoMallaVeterinaria')) || {};
                 
                 materias.forEach((materia, index) => {
                     if (progresoGuardado[index]) {
@@ -804,7 +804,7 @@
                     document.querySelectorAll('.semestre').forEach(semestre => {
                         semestre.classList.remove('celebrated');
                     });
-                    sessionStorage.removeItem('progresoMallaVeterinaria');
+                    localStorage.removeItem('progresoMallaVeterinaria');
                     actualizarEstadisticas();
                 }
             }
