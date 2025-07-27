@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#7c3aed">
+    <title>Malla Curricular - Veterinaria UdeA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #7c3aed;
+            --secondary-purple: #a855f7;
+            --light-purple: #e9d5ff;
+            --very-light-purple: #f3e8ff;
+            --dark-purple: #5b21b6;
+            --completed-green: #10b981;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --background: #fafafa;
+            --border-light: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--very-light-purple) 0%, var(--background) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+        }
+
+        .header h1 {
+            color: var(--primary-purple);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            background: var(--border-light);
+            border-radius: 12px;
+            padding: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            font-weight: 500;
+            color: var(--primary-purple);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            min-width: 120px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .semestres-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .semestre {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .semestre::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        }
+
+        .semestre:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--light-purple);
+        }
+
+        .semestre h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-purple);
+            position: relative;
+        }
+
+        .semestre h2::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: var(--primary-purple);
+        }
+
+        .materia {
+            background: var(--very-light-purple);
+            color: var(--text-dark);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .materia::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .materia:hover::before {
+            left: 100%;
+        }
+
+        .materia:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+            border-color: var(--secondary-purple);
+            background: var(--light-purple);
+        }
+
+        .materia.vista {
+            background: linear-gradient(135deg, var(--completed-green), #059669);
+            color: var(--white);
+            font-weight: 600;
+            text-decoration: line-through;
+            border-color: var(--completed-green);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .materia.vista:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .materia.vista::after {
+            content: '✓';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .reset-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-purple);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-hover);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .reset-button:hover {
+            background: var(--dark-purple);
+            transform: scale(1.1);
+        }
+
+        .tooltip {
+            position: absolute;
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            bottom: 70px;
+            right: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .reset-button:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive Design - Mobile First */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                margin: 0 auto 20px auto;
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+            
+            .header p {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+            
+            .stats-container {
+                gap: 10px;
+                margin: 20px 0;
+            }
+            
+            .stat-item {
+                padding: 15px 12px;
+                min-width: 90px;
+                flex: 1;
+                max-width: 110px;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.75rem;
+            }
+            
+            .semestres-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .semestre {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            
+            .semestre h2 {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            
+            .materia {
+                padding: 12px 10px;
+                margin-bottom: 8px;
+                font-size: 0.85rem;
+                border-radius: 10px;
+            }
+            
+            .reset-button {
+                bottom: 15px;
+                right: 15px;
+                width: 55px;
+                height: 55px;
+                font-size: 18px;
+            }
+            
+            .celebration {
+                margin: 0 15px;
+                padding: 30px 20px;
+                border-radius: 15px;
+                max-width: calc(100vw - 30px);
+            }
+            
+            .celebration h3 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Tablet Portrait */
+        @media (min-width: 481px) and (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .stats-container {
+                gap: 15px;
+                justify-content: center;
+            }
+            
+            .stat-item {
+                min-width: 110px;
+            }
+            
+            .semestres-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .reset-button {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+            }
+        }
+        
+        /* Tablet Landscape */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .semestres-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            
+            .header {
+                max-width: 900px;
+            }
+        }
+        
+        /* Large Tablets and Small Desktops */
+        @media (min-width: 1025px) and (max-width: 1200px) {
+            .semestres-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .materia {
+                padding: 16px 12px;
+                margin-bottom: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .materia:hover {
+                transform: none;
+            }
+            
+            .materia:active {
+                transform: scale(0.98);
+                background: var(--secondary-purple);
+                color: white;
+            }
+            
+            .materia.vista:active {
+                background: #047857;
+            }
+            
+            .reset-button {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .semestre:hover {
+                transform: none;
+            }
+        }
+        
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .header {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+                margin-bottom: 8px;
+            }
+            
+            .header p {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+            
+            .stats-container {
+                margin: 15px 0;
+            }
+            
+            .stat-item {
+                padding: 12px 10px;
+            }
+            
+            .semestres-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .semestre {
+                padding: 15px 12px;
+            }
+            
+            .materia {
+                padding: 10px 8px;
+                margin-bottom: 6px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .materia:active {
+            animation: pulse 0.3s ease-in-out;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-hover);
+            text-align: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .celebration.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .celebration h3 {
+            color: var(--primary-purple);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Malla Curricular de Mi Veterinaria 🐾</h1>
+        <p>Haga clic en cada materia para marcarla como completada</p>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">0% completado (0 de 58 materias)</div>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number" id="completedCount">0</span>
+                <span class="stat-label">Completadas</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="remainingCount">58</span>
+                <span class="stat-label">Restantes</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="semesterProgress">0/10</span>
+                <span class="stat-label">Semestres</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="semestres-container">
+        <div class="semestre">
+            <h2>I SEMESTRE</h2>
+            <div class="materia">Comunicación</div>
+            <div class="materia">Sostenibilidad Ambiental</div>
+            <div class="materia">ICV</div>
+            <div class="materia">Biología celular y molecular</div>
+            <div class="materia">Bioquímica</div>
+            <div class="materia">INV I</div>
+            <div class="materia">Inglés I</div>
+        </div>
+
+        <div class="semestre">
+            <h2>II SEMESTRE</h2>
+            <div class="materia">Economía</div>
+            <div class="materia">Anatomía</div>
+            <div class="materia">Histología Y Embriología</div>
+            <div class="materia">Inmunología</div>
+            <div class="materia">Imagenología</div>
+            <div class="materia">INV II</div>
+            <div class="materia">Inglés II</div>
+        </div>
+
+        <div class="semestre">
+            <h2>III SEMESTRE</h2>
+            <div class="materia">Fisiología</div>
+            <div class="materia">Microbiología</div>
+            <div class="materia">Parasitología</div>
+            <div class="materia">Etología y Bienestar animal</div>
+            <div class="materia">INV III</div>
+            <div class="materia">Inglés III</div>
+        </div>
+
+        <div class="semestre">
+            <h2>IV SEMESTRE</h2>
+            <div class="materia">Gerencia agropecuaria</div>
+            <div class="materia">Formación ciudadana</div>
+            <div class="materia">Patología General</div>
+            <div class="materia">Semiología de Especies de Producción</div>
+            <div class="materia">Semiología de Especies de compañía</div>
+            <div class="materia">Nutrición clínica</div>
+            <div class="materia">Espacio curricular de Integración I</div>
+            <div class="materia">Inglés IV</div>
+        </div>
+
+        <div class="semestre">
+            <h2>V SEMESTRE</h2>
+            <div class="materia">Electiva línea socio-humanística</div>
+            <div class="materia">Patología Sistémica</div>
+            <div class="materia">Patología Clínica</div>
+            <div class="materia">Principios Básicos de cirugía</div>
+            <div class="materia">Epidemiología I</div>
+            <div class="materia">Espacio curricular de Integración II</div>
+            <div class="materia">Inglés V</div>
+        </div>
+        
+        <div class="semestre">
+            <h2>VI SEMESTRE</h2>
+            <div class="materia">Desarrollo rural y Extensión agraria</div>
+            <div class="materia">Electiva Vet I</div>
+            <div class="materia">Farmacología</div>
+            <div class="materia">Teriogenología</div>
+            <div class="materia">Epidemiología II</div>
+            <div class="materia">Espacio curricular de Integración III</div>
+            <div class="materia">Content Based English</div>
+        </div>
+        
+        <div class="semestre">
+            <h2>VII SEMESTRE</h2>
+            <div class="materia">Legislación y Bioética</div>
+            <div class="materia">Electiva Vet II</div>
+            <div class="materia">Medicina I</div>
+            <div class="materia">Medicina II</div>
+            <div class="materia">Salud Pública Vet I</div>
+            <div class="materia">Espacio curricular de Integración IV</div>
+        </div>
+        
+        <div class="semestre">
+            <h2>VIII SEMESTRE</h2>
+            <div class="materia">Electiva Vet III</div>
+            <div class="materia">Medicina III</div>
+            <div class="materia">Medicina IV</div>
+            <div class="materia">Biotecnología</div>
+            <div class="materia">Salud Pública Vet II</div>
+            <div class="materia">Espacio curricular de Integración V</div>
+        </div>
+        
+        <div class="semestre">
+            <h2>IX SEMESTRE</h2>
+            <div class="materia">Gestión en Salud Pública vet</div>
+            <div class="materia">Clínica Electiva I</div>
+            <div class="materia">Clínica Electiva II</div>
+        </div>
+        
+        <div class="semestre">
+            <h2>X SEMESTRE</h2>
+            <div class="materia">Clínica Electiva III</div>
+            <div class="materia">Profundización I</div>
+        </div>
+    </div>
+
+    <button class="reset-button" id="resetButton" title="Reiniciar Progreso">
+        🔄
+        <div class="tooltip">Reiniciar Progreso</div>
+    </button>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="celebration" id="celebration">
+        <h3>🎉 ¡Felicitacionesss mi vidaa! 🎉</h3>
+        <p>Has completado todo el semestre</p>
+        <p>¡Sigue así, mi futura veterinaria preciosa! ❤️🐼</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const materias = document.querySelectorAll('.materia');
+            const totalMaterias = materias.length;
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const completedCount = document.getElementById('completedCount');
+            const remainingCount = document.getElementById('remainingCount');
+            const semesterProgress = document.getElementById('semesterProgress');
+            const resetButton = document.getElementById('resetButton');
+            const celebration = document.getElementById('celebration');
+            const overlay = document.getElementById('overlay');
+
+            function actualizarEstadisticas() {
+                const completadas = document.querySelectorAll('.materia.vista').length;
+                const restantes = totalMaterias - completadas;
+                const porcentaje = Math.round((completadas / totalMaterias) * 100);
+                
+                // Actualizar barra de progreso
+                progressBar.style.width = porcentaje + '%';
+                progressText.textContent = `${porcentaje}% completado (${completadas} de ${totalMaterias} materias)`;
+                
+                // Actualizar estadísticas
+                completedCount.textContent = completadas;
+                remainingCount.textContent = restantes;
+                
+                // Calcular semestres completados
+                const semestres = document.querySelectorAll('.semestre');
+                let semestresCompletos = 0;
+                
+                semestres.forEach(semestre => {
+                    const materiasDelSemestre = semestre.querySelectorAll('.materia');
+                    const materiasCompletadas = semestre.querySelectorAll('.materia.vista');
+                    
+                    if (materiasDelSemestre.length === materiasCompletadas.length && materiasDelSemestre.length > 0) {
+                        semestresCompletos++;
+                        // Mostrar celebración si se completó un semestre
+                        if (materiasCompletadas.length === materiasDelSemestre.length) {
+                            // Solo mostrar una vez por semestre
+                            if (!semestre.classList.contains('celebrated')) {
+                                semestre.classList.add('celebrated');
+                                mostrarCelebracion();
+                            }
+                        }
+                    } else {
+                        semestre.classList.remove('celebrated');
+                    }
+                });
+                
+                semesterProgress.textContent = `${semestresCompletos}/10`;
+            }
+
+            function mostrarCelebracion() {
+                overlay.classList.add('show');
+                celebration.classList.add('show');
+                
+                setTimeout(() => {
+                    overlay.classList.remove('show');
+                    celebration.classList.remove('show');
+                }, 3000);
+            }
+
+            function guardarProgreso() {
+                const progreso = {};
+                materias.forEach((materia, index) => {
+                    progreso[index] = materia.classList.contains('vista');
+                });
+                const progresoData = JSON.stringify(progreso);
+                sessionStorage.setItem('progresoMallaVeterinaria', progresoData);
+                actualizarEstadisticas();
+            }
+
+            function cargarProgreso() {
+                const progresoGuardado = JSON.parse(sessionStorage.getItem('progresoMallaVeterinaria')) || {};
+                
+                materias.forEach((materia, index) => {
+                    if (progresoGuardado[index]) {
+                        materia.classList.add('vista');
+                    }
+                });
+                actualizarEstadisticas();
+            }
+
+            function reiniciarProgreso() {
+                if (confirm('¿Estás seguro de que quieres reiniciar todo el progreso?')) {
+                    materias.forEach(materia => {
+                        materia.classList.remove('vista');
+                    });
+                    document.querySelectorAll('.semestre').forEach(semestre => {
+                        semestre.classList.remove('celebrated');
+                    });
+                    sessionStorage.removeItem('progresoMallaVeterinaria');
+                    actualizarEstadisticas();
+                }
+            }
+
+            // Event listeners
+            materias.forEach(materia => {
+                materia.addEventListener('click', () => {
+                    materia.classList.toggle('vista');
+                    
+                    // Haptic feedback para dispositivos móviles
+                    if ('vibrate' in navigator) {
+                        navigator.vibrate(50);
+                    }
+                    
+                    guardarProgreso();
+                });
+                
+                // Prevenir selección de texto en móviles
+                materia.addEventListener('selectstart', e => e.preventDefault());
+            });
+
+            resetButton.addEventListener('click', reiniciarProgreso);
+
+            overlay.addEventListener('click', () => {
+                overlay.classList.remove('show');
+                celebration.classList.remove('show');
+            });
+
+            // Cargar progreso inicial
+            cargarProgreso();
+        });
+    </script>
+</body>
+</html>
